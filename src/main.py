@@ -3,7 +3,7 @@ import math
 from calculations.orbital_mechanics import update_classical, distance
 from calculations.parameters import schwarzschild_radius
 from entities.compact_object import CompactObject
-from visualisation.plotter import plot_3d_scatter_animation
+from visualisation.plotter import plot_3d_scatter_animation, mp4_to_gif
 
 def main():
 
@@ -30,7 +30,8 @@ def main():
            break
 
     plot_3d_scatter_animation(object_1, object_2, trail=True)
-    
+    mp4_to_gif('../figures/cbc_merger_animation.mp4', '../figures/cbc_merger_animation.gif')
+
     print(f'Minimum distance: {min(distances)} Solar Radii')
 
 if __name__ == '__main__':

@@ -204,3 +204,21 @@ def worker_with_trail(args):
         # Saving the figure to a file and then closing it to free up memory
         plt.savefig(f'{frames_dir}/frame_{frame:04d}.png', dpi=200)
         plt.close(fig)
+
+def mp4_to_gif(mp4_path, gif_path):
+    try:
+        command = [
+            'ffmpeg',
+            '-i', mp4_path,  # Input file
+            '-filter_complex', '[0:v] fps=10,scale=w=480:h=-1,split [a][b];[a] palettegen [p];[b][p] paletteuse',
+            '-loop', str(0),  # Loop count
+            '-f', 'gif',  # Output format
+            gif_path  # Output file
+        ]
+
+        subprocess.run(command, stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
+        print(f"Conversion completed: '{mp4_path}' to '{gif_path}'")
+    except subprocess.CalledProcessError as e:
+        print(f"An error occurred during conversion: {e}")
+
+
