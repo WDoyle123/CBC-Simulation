@@ -28,6 +28,7 @@ class CompactObject:
         self.velocity_x = velocity_x
         self.velocity_y = velocity_y
         self.velocity_z = velocity_z
+        self.trajectory = [(self.x, self.y, self.z)]
         self.mass = mass
         self.radius = radius
         self.object_type = object_type
@@ -39,6 +40,7 @@ class CompactObject:
         self.x += self.velocity_x * time_step
         self.y += self.velocity_y * time_step
         self.z += self.velocity_z * time_step
+        self.trajectory.append((self.x, self.y, self.z))
 
     def update_velocity(self, acceleration: tuple[float, float, float], time_step: float):
         """
