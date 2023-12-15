@@ -1,6 +1,5 @@
 import math
-
-G = 6.67430e-11  # Gravitational constant
+from utils.constants import *
 
 def update_classical(compact_object_1, compact_object_2, time_step):
 
