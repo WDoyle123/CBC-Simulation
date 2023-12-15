@@ -1,4 +1,6 @@
-from calculations.orbital_mechanics import update_classical
+import math
+
+from calculations.orbital_mechanics import update_classical, distance
 from calculations.parameters import schwarzschild_radius
 from entities.compact_object import CompactObject
 from visualisation.plotter import plot_3d_scatter_animation
@@ -16,19 +18,20 @@ def main():
 
     # Simulation parameters
     time_step = 1000 # Time step in seconds
-    num_steps = 500 # Number of steps in the simulation
 
-    for step in range(num_steps):
-        collision = update_classical(object_1, object_2, time_step)
+    initial_distance = math.sqrt(distance(object_1, object_2, 'x')**2 +
+                                 distance(object_1, object_2, 'y')**2 +
+                                 distance(object_1, object_2, 'z')**2)
 
-        if collision:
-            print(f"\nCollision detected at step {step}")
-            break
+    while True:
+        collision_or_separation, step, distances = update_classical(object_1, object_2, time_step, initial_distance)
+        if collision_or_separation:
+           print(f"\rStep {step}: Object 1 Position: ({object_1.x}, {object_1.y}, {object_1.z}), Object 2 Position: ({object_2.x}, {object_2.y}, {object_2.z})", end="", flush=True)
+           break
 
-        print(f"\rStep {step}: Object 1 Position: ({object_1.x}, {object_1.y}, {object_1.z}), Object 2 Position: ({object_2.x}, {object_2.y}, {object_2.z})", end="", flush=True)
-
-    plot_3d_scatter_animation(object_1, object_2)
-
+    plot_3d_scatter_animation(object_1, object_2, trail=True)
+    
+    print(f'Minimum distance: {min(distances)} Solar Radii')
 
 if __name__ == '__main__':
     main()

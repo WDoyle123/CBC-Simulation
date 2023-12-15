@@ -1,7 +1,7 @@
 import math
 from utils.constants import *
 
-def update_classical(compact_object_1, compact_object_2, time_step):
+def update_classical(compact_object_1, compact_object_2, time_step, initial_distance):
 
     # Calculate distance and direction
     dx = distance(compact_object_1, compact_object_2, 'x')
@@ -9,9 +9,12 @@ def update_classical(compact_object_1, compact_object_2, time_step):
     dz = distance(compact_object_1, compact_object_2, 'z')
     distance_3d = math.sqrt(dx**2 + dy**2 + dz**2)
 
-    # Basic collision detection
-    if distance_3d <= (compact_object_1.radius + compact_object_2.radius):
-        return True
+    distances = []
+    distances.append(distance_3d)
+
+    # Check if distance is greater than initial distance or if a collision happens
+    if distance_3d > (initial_distance * 2) or distance_3d <= (compact_object_1.radius + compact_object_2.radius):
+        return (True, time_step, distances)  # Return True and the time step
 
     direction = (dx / distance_3d, dy / distance_3d, dz / distance_3d)
 
@@ -32,7 +35,7 @@ def update_classical(compact_object_1, compact_object_2, time_step):
     compact_object_1.update_position(time_step)
     compact_object_2.update_position(time_step)
 
-    return False
+    return (False, time_step, distances)  # Return False and the time step
 
 def distance(compact_object_1, compact_object_2, axis):
     return getattr(compact_object_2, axis) - getattr(compact_object_1, axis)
