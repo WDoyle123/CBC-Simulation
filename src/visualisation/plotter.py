@@ -11,8 +11,6 @@ from mpl_toolkits.mplot3d import Axes3D
 from matplotlib.animation import FuncAnimation
 from multiprocessing import Pool
 
-from calculations.orbital_mechanics import distance
-
 def blackout(fig, ax, grid=True):
 
     fig.set_facecolor('black')
@@ -103,7 +101,7 @@ def plot_3d_scatter(object1, object2):
 
     plt.savefig('../figures/cbc_merger.png', dpi=50)
 
-def plot_3d_scatter_animation(object_1, object_2, trail=False):
+def plot_3d_scatter_animation(object_1, object_2, file, trail=False):
 
     trajectory_length = len(object_1.trajectory)
     colours_1 = cm.magma(range(trajectory_length))
@@ -133,7 +131,7 @@ def plot_3d_scatter_animation(object_1, object_2, trail=False):
         '-i', f'{frames_dir}/frame_%04d.png',
         '-c:v', 'h264_nvenc',  # for NVIDIA GPU
         '-preset', 'fast',
-        '../figures/cbc_merger_animation.mp4'
+        f'{file}.mp4'
     ]
     subprocess.run(ffmpeg_command, stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
 
@@ -218,8 +216,7 @@ def mp4_to_gif(mp4_path, gif_path):
             gif_path  # Output file
         ]
 
-        subprocess.run(command, stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
-        print(f"Conversion completed: '{mp4_path}' to '{gif_path}'")
+        subprocess.run(command, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     except subprocess.CalledProcessError as e:
         print(f"An error occurred during conversion: {e}")
 
