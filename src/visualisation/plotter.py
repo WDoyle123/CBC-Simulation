@@ -177,7 +177,7 @@ def worker_with_trail(args):
     for frame in frame_range:
         # Create a new figure and axis for each frame
         fig, ax = get_fig_ax(trail, object_1, object_2)
-        plt.title(f'CBC Merger', color='white', fontsize=12)
+        plt.title(f'Compact Binary Coalescence', color='white', fontsize=12)
 
         # Calculate the start index for slicing the trajectory. It ensures that only the last 'max_points' are considered
         start_idx_1 = max(0, frame + 1 - max_points)
