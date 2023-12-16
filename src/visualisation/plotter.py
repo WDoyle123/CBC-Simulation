@@ -128,6 +128,7 @@ def plot_3d_scatter_animation(object_1, object_2, trail=False):
     # Use FFmpeg to combine frames into a video with GPU acceleration
     ffmpeg_command = [
         'ffmpeg',
+        '-y',
         '-r', str(30),  # frame rate
         '-i', f'{frames_dir}/frame_%04d.png',
         '-c:v', 'h264_nvenc',  # for NVIDIA GPU
@@ -198,8 +199,8 @@ def worker_with_trail(args):
         ax.scatter(x1, y1, z1, s=object_1.radius * 0.01, c=colour_1, alpha=1, label=(f'{object_1.object_type} Mass: {object_1.mass}'))
         ax.scatter(x2, y2, z2, s=object_2.radius * 0.01, c=colour_2, alpha=1, label=(f'{object_2.object_type} Mass: {object_2.mass}'))
 
-        legend = ax.legend(facecolor='darkgrey', loc='upper center', bbox_to_anchor=(0.5, -0.05), ncol=2, fontsize='small')
-        plt.setp(legend.get_texts(), color='black')
+        legend = ax.legend(facecolor='black', loc='upper center', bbox_to_anchor=(0.5, -0.05), ncol=2, fontsize='small')
+        plt.setp(legend.get_texts(), color='white')
 
         # Saving the figure to a file and then closing it to free up memory
         plt.savefig(f'{frames_dir}/frame_{frame:04d}.png', dpi=200)
@@ -209,6 +210,7 @@ def mp4_to_gif(mp4_path, gif_path):
     try:
         command = [
             'ffmpeg',
+            '-y',
             '-i', mp4_path,  # Input file
             '-filter_complex', '[0:v] fps=10,scale=w=480:h=-1,split [a][b];[a] palettegen [p];[b][p] paletteuse',
             '-loop', str(0),  # Loop count
