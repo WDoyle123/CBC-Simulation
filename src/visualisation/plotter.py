@@ -56,7 +56,7 @@ def get_fig_ax(trail, object_1, object_2, separation):
 
     fig, ax = blackout(fig, ax)
 
-    if separation is None:
+    if separation is not None:
         # Calculate min and max values for x, y, and z from both objects' trajectories
         x_vals = [x for x, _, _ in object_1.trajectory] + [x for x, _, _ in object_2.trajectory]
         y_vals = [y for _, y, _ in object_1.trajectory] + [y for _, y, _ in object_2.trajectory]
@@ -66,7 +66,7 @@ def get_fig_ax(trail, object_1, object_2, separation):
         ymin, ymax = min(y_vals), max(y_vals)
         zmin, zmax = min(z_vals), max(z_vals)
 
-        padding = 0
+        padding = 10
         ax.set_xlim([xmin - padding, xmax + padding])
         ax.set_ylim([ymin - padding, ymax + padding])
         ax.set_zlim([zmin - padding, zmax + padding])
@@ -115,7 +115,7 @@ def plot_3d_scatter(object1, object2):
 
     plt.savefig('../figures/cbc_merger.png', dpi=50)
 
-def plot_3d_scatter_animation(object_1, object_2, file, separation=None,trail=False):
+def plot_3d_scatter_animation(object_1, object_2, file, separation=None,trail=None, fps=30):
 
     trajectory_length = len(object_1.trajectory)
     colours_1 = cm.magma(range(trajectory_length))
@@ -128,7 +128,7 @@ def plot_3d_scatter_animation(object_1, object_2, file, separation=None,trail=Fa
     num_workers = (os.cpu_count() - 1)  # or os.cpu_count() to use all available CPU cores
     frame_ranges = np.array_split(range(trajectory_length), num_workers)
 
-    if trail:
+    if trail is not None:
         with Pool(num_workers) as pool:
             tasks = [(frame_range, object_1, object_2, trail, frames_dir, separation) for frame_range in frame_ranges]
             list(tqdm(pool.imap_unordered(worker_with_trail, tasks), total=len(tasks), desc='Generating frame'))
@@ -143,7 +143,7 @@ def plot_3d_scatter_animation(object_1, object_2, file, separation=None,trail=Fa
     ffmpeg_command = [
         'ffmpeg',
         '-y',
-        '-r', str(30),  # frame rate
+        '-r', str(fps),  # frame rate
         '-i', f'{frames_dir}/frame_%04d.png',
         '-c:v', 'h264_nvenc',  # for NVIDIA GPU
         '-preset', 'fast',
@@ -182,7 +182,7 @@ def worker_with_trail(args):
     frame_range, object_1, object_2, trail, frames_dir, separation = args
 
     # Setting the maximum number of points to be plotted in the trail
-    max_points = 20  
+    max_points = trail  
 
     # Generating colour maps for the maximum number of points in the trail
     colours_1 = cm.magma(np.linspace(0, 1, max_points))
@@ -210,8 +210,8 @@ def worker_with_trail(args):
         colour_2 = colours_2[:num_points_2]
 
         # Plotting the points for each object with their respective colours and sizes
-        ax.scatter(x1, y1, z1, s=object_1.radius * 0.01, c=colour_1, alpha=1, label=(f'{object_1.object_type} Mass: {object_1.mass}'))
-        ax.scatter(x2, y2, z2, s=object_2.radius * 0.01, c=colour_2, alpha=1, label=(f'{object_2.object_type} Mass: {object_2.mass}'))
+        ax.scatter(x1, y1, z1, s=object_1.radius * 0.1, c=colour_1, alpha=1, label=(f'{object_1.object_type} Mass: {object_1.mass}'))
+        ax.scatter(x2, y2, z2, s=object_2.radius * 0.1, c=colour_2, alpha=1, label=(f'{object_2.object_type} Mass: {object_2.mass}'))
 
         legend = ax.legend(facecolor='black', loc='upper center', bbox_to_anchor=(0.5, -0.05), ncol=2, fontsize='small')
         plt.setp(legend.get_texts(), color='white')

@@ -7,9 +7,9 @@ def update_classical(compact_object_1, compact_object_2, time_step, initial_dist
     dx, dy, dz, distance_between_objects = distance_3d(compact_object_1, compact_object_2)
 
     # Check for separation or collision
-    if distance_between_objects > initial_distance * 2:
+    if distance_between_objects > initial_distance :
         return 'separation'
-    if distance_between_objects <= (compact_object_1.radius + compact_object_2.radius):
+    if distance_between_objects <= 8:
         return 'collision'
 
     direction = (dx / distance_between_objects, dy / distance_between_objects, dz / distance_between_objects)
@@ -65,11 +65,15 @@ def gw_energy_loss(compact_object_1, compact_object_2, distance_between_objects)
     return orbital_energy_loss
 
 def update_velocity_from_kinetic_energy(compact_object):
-    # Calculate the magnitude of the new velocity
-    compact_object.kinetic_energy * 100
-    compact_object.mass * 100
+    # Check if the kinetic energy is close to zero
+    if compact_object.kinetic_energy <= 0:
+        compact_object.velocity_x = 0
+        compact_object.velocity_y = 0
+        compact_object.velocity_z = 0
+        return
+
+    # Calculate the new velocity magnitude
     new_velocity_magnitude = math.sqrt(2 * compact_object.kinetic_energy / compact_object.mass)
-    new_velocity_magnitude /= 100
 
     # Update velocity components proportionally
     total_velocity = math.sqrt(compact_object.velocity_x**2 + compact_object.velocity_y**2 + compact_object.velocity_z**2)
@@ -77,6 +81,18 @@ def update_velocity_from_kinetic_energy(compact_object):
         compact_object.velocity_x *= new_velocity_magnitude / total_velocity
         compact_object.velocity_y *= new_velocity_magnitude / total_velocity
         compact_object.velocity_z *= new_velocity_magnitude / total_velocity
+
+def orbital_velocity(separation, center_of_mass_x, mass_1, mass_2):
+    # Calculate the orbital velocity for a circular orbit
+    r1 = abs(center_of_mass_x - 0)
+    r2 = abs(center_of_mass_x - separation) 
+    orbital_velocity_1 = math.sqrt(G * mass_2 / r1) * 0.5
+    orbital_velocity_2 = math.sqrt(G * mass_1 / r2) * 0.5
+
+    velocity_y_1 = orbital_velocity_1
+    velocity_y_2 = -orbital_velocity_2
+
+    return velocity_y_1, velocity_y_2
 
 def update_classical_no_gw(compact_object_1, compact_object_2, time_step, initial_distance):
 

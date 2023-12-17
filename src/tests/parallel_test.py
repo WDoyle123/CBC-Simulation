@@ -21,15 +21,32 @@ def main():
     velocity_y = 0.2
     velocity_z = 0.
 
-    separation = 2e+3
+    separation = 1e+3
 
-    compact_object_1 = CompactObject(x=0., y=0., z=0., mass=mass_1, radius=radius_1, object_type="Black Hole", velocity_x=velocity_x, velocity_y=velocity_y, velocity_z=velocity_z)
-    compact_object_2 = CompactObject(x=separation, y=separation, z=0, mass=mass_2, radius=radius_2, object_type="Black Hole", velocity_x=-velocity_x, velocity_y=-velocity_y, velocity_z=-velocity_z)
+    compact_object_1 = CompactObject(x=0.,
+                                     y=0.,
+                                     z=0.,
+                                     mass=mass_1,
+                                     radius=radius_1,
+                                     object_type="Black Hole",
+                                     velocity_x=velocity_x,
+                                     velocity_y=velocity_y,
+                                     velocity_z=velocity_z)
+
+    compact_object_2 = CompactObject(x=separation, 
+                                     y=separation,
+                                     z=0,
+                                     mass=mass_2, 
+                                     radius=radius_2, 
+                                     object_type="Black Hole", 
+                                     velocity_x=-velocity_x, 
+                                     velocity_y=-velocity_y, 
+                                     velocity_z=-velocity_z)
 
     # Simulation parameters
-    time_step = 60 # Time step in seconds
+    time_step = 6 # Time step in seconds
     current_step = 0
-    max_step = 3e+4
+    max_step = 3e+6
 
     _, _, _, initial_distance = distance_3d(compact_object_1, compact_object_2)
     compact_object_1.kinetic_energy = kinetic_energy(compact_object_1)
@@ -40,15 +57,35 @@ def main():
         simulation = update_classical(compact_object_1, compact_object_2, time_step, initial_distance)
         if simulation == 'separation' or simulation == 'collision':
             file = '../../figures/test/parallels/simulation_parallel_gw'
-            plot_3d_scatter_animation(compact_object_1, compact_object_2, file, separation=separation, trail=True)
+            plot_3d_scatter_animation(compact_object_1, compact_object_2, file, separation=separation, trail=80, fps=120)
             mp4_to_gif(f'{file}.mp4', f'{file}.gif')
             break
         if current_step >= max_step:
             break
 
     # No gravitational wave energy loss
-    compact_object_3 = CompactObject(x=0., y=0., z=0., mass=mass_1, radius=radius_1, object_type="Black Hole", velocity_x=velocity_x, velocity_y=velocity_y, velocity_z=velocity_z)
-    compact_object_4 = CompactObject(x=separation, y=separation, z=0, mass=mass_2, radius=radius_2, object_type="Black Hole", velocity_x=-velocity_x, velocity_y=-velocity_y, velocity_z=-velocity_z)
+    compact_object_3 = CompactObject(x=0., 
+                                     y=0., 
+                                     z=0., 
+                                     mass=mass_1, 
+                                     radius=radius_1, 
+                                     object_type="Black Hole", 
+                                     velocity_x=velocity_x, 
+                                     velocity_y=velocity_y, 
+                                     velocity_z=velocity_z)
+
+    compact_object_4 = CompactObject(x=separation, 
+                                     y=separation, 
+                                     z=0, 
+                                     mass=mass_2, 
+                                     radius=radius_2, 
+                                     object_type="Black Hole", 
+                                     velocity_x=-velocity_x, 
+                                     velocity_y=-velocity_y, 
+                                     velocity_z=-velocity_z)
+
+    compact_object_3.kinetic_energy = kinetic_energy(compact_object_3)
+    compact_object_4.kinetic_energy = kinetic_energy(compact_object_4)
 
     current_step = 0
 
@@ -56,7 +93,7 @@ def main():
         simulation = update_classical_no_gw(compact_object_3, compact_object_4, time_step, initial_distance)
         if simulation == 'separation' or simulation == 'collision':
             file = '../../figures/test/parallels/simulation_parallel_no_gw'
-            plot_3d_scatter_animation(compact_object_3, compact_object_4, file, separation, trail=True)
+            plot_3d_scatter_animation(compact_object_3, compact_object_4, file, separation, trail=80, fps=120)
             mp4_to_gif(f'{file}.mp4', f'{file}.gif')
             break
         if current_step >= max_step:
