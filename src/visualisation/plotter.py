@@ -47,26 +47,38 @@ def blackout(fig, ax, grid=True):
 
     return fig, ax
 
-def get_fig_ax(trail, object_1, object_2):
+def get_fig_ax(trail, object_1, object_2, separation):
 
     fig = plt.figure(figsize=(4, 4))
     ax = fig.add_subplot(111, projection='3d')
 
     fig, ax = blackout(fig, ax)
 
-    # Calculate min and max values for x, y, and z from both objects' trajectories
-    x_vals = [x for x, _, _ in object_1.trajectory] + [x for x, _, _ in object_2.trajectory]
-    y_vals = [y for _, y, _ in object_1.trajectory] + [y for _, y, _ in object_2.trajectory]
-    z_vals = [z for _, _, z in object_1.trajectory] + [z for _, _, z in object_2.trajectory]
+    if separation is None:
+        # Calculate min and max values for x, y, and z from both objects' trajectories
+        x_vals = [x for x, _, _ in object_1.trajectory] + [x for x, _, _ in object_2.trajectory]
+        y_vals = [y for _, y, _ in object_1.trajectory] + [y for _, y, _ in object_2.trajectory]
+        z_vals = [z for _, _, z in object_1.trajectory] + [z for _, _, z in object_2.trajectory]
 
-    xmin, xmax = min(x_vals), max(x_vals)
-    ymin, ymax = min(y_vals), max(y_vals)
-    zmin, zmax = min(z_vals), max(z_vals)
+        xmin, xmax = min(x_vals), max(x_vals)
+        ymin, ymax = min(y_vals), max(y_vals)
+        zmin, zmax = min(z_vals), max(z_vals)
 
-    padding = 0
-    ax.set_xlim([xmin - padding, xmax + padding])
-    ax.set_ylim([ymin - padding, ymax + padding])
-    ax.set_zlim([zmin - padding, zmax + padding])
+        padding = 0
+        ax.set_xlim([xmin - padding, xmax + padding])
+        ax.set_ylim([ymin - padding, ymax + padding])
+        ax.set_zlim([zmin - padding, zmax + padding])
+
+    else:
+        # Calculate midpoint of the positions of the two objects
+        midpoint_x = (object_1.x + object_2.x) / 2
+        midpoint_y = (object_1.y + object_2.y) / 2
+        midpoint_z = (object_1.z + object_2.z) / 2
+
+        # Set the limits based on the specified separation
+        ax.set_xlim([midpoint_x - separation, midpoint_x + separation])
+        ax.set_ylim([midpoint_y - separation, midpoint_y + separation])
+        ax.set_zlim([midpoint_z - separation, midpoint_z + separation])
 
     return fig, ax
 
@@ -101,7 +113,7 @@ def plot_3d_scatter(object1, object2):
 
     plt.savefig('../figures/cbc_merger.png', dpi=50)
 
-def plot_3d_scatter_animation(object_1, object_2, file, trail=False):
+def plot_3d_scatter_animation(object_1, object_2, file, separation=None,trail=False):
 
     trajectory_length = len(object_1.trajectory)
     colours_1 = cm.magma(range(trajectory_length))
@@ -116,11 +128,11 @@ def plot_3d_scatter_animation(object_1, object_2, file, trail=False):
 
     if trail:
         with Pool(num_workers) as pool:
-            tasks = [(frame_range, object_1, object_2, trail, frames_dir) for frame_range in frame_ranges]
+            tasks = [(frame_range, object_1, object_2, trail, frames_dir, separation) for frame_range in frame_ranges]
             list(tqdm(pool.imap_unordered(worker_with_trail, tasks), total=len(tasks), desc='Generating frame'))
     else:
         with Pool(num_workers) as pool:
-            tasks = [(frame_range, object_1, object_2, trail, frames_dir) for frame_range in frame_ranges]
+            tasks = [(frame_range, object_1, object_2, trail, frames_dir, separation) for frame_range in frame_ranges]
             list(tqdm(pool.imap_unordered(worker, tasks), total=len(tasks), desc="Generating frames"))
 
     # Use FFmpeg to combine frames into a video with GPU acceleration
@@ -143,10 +155,10 @@ def plot_3d_scatter_animation(object_1, object_2, file, trail=False):
 def worker(args):
     
     # Unpack args passed to worker function
-    frame_range, object_1, object_2, trail, frames_dir = args
+    frame_range, object_1, object_2, trail, frames_dir, separation = args
     for frame in frame_range:
         # Create new figure and axis for frame
-        fig, ax = get_fig_ax(trail, object_1, object_2)
+        fig, ax = get_fig_ax(trail, object_1, object_2, separation)
 
         # Get coorindates corresponding to the frame
         x1, y1, z1 = object_1.trajectory[frame]
@@ -163,7 +175,7 @@ def worker(args):
 def worker_with_trail(args):
 
     # Unpacking arguments passed to the worker function
-    frame_range, object_1, object_2, trail, frames_dir = args
+    frame_range, object_1, object_2, trail, frames_dir, separation = args
 
     # Setting the maximum number of points to be plotted in the trail
     max_points = 20  
@@ -174,7 +186,7 @@ def worker_with_trail(args):
 
     for frame in frame_range:
         # Create a new figure and axis for each frame
-        fig, ax = get_fig_ax(trail, object_1, object_2)
+        fig, ax = get_fig_ax(trail, object_1, object_2, separation)
         plt.title(f'Compact Binary Coalescence', color='white', fontsize=12)
 
         # Calculate the start index for slicing the trajectory. It ensures that only the last 'max_points' are considered

@@ -1,5 +1,5 @@
 class CompactObject:
-    def __init__(self, x: float, y: float, z: float, velocity_x: float, velocity_y: float, velocity_z: float, mass: float, radius: float, object_type: str):
+    def __init__(self, x: float, y: float, z: float, velocity_x: float, velocity_y: float, velocity_z: float, mass: float, radius: float, object_type: str, kinetic_energy: float = 0):
         """
         Initialise a  new compact object
         
@@ -28,6 +28,7 @@ class CompactObject:
         self.velocity_x = velocity_x
         self.velocity_y = velocity_y
         self.velocity_z = velocity_z
+        self.kinetic_energy = kinetic_energy
         self.trajectory = [(self.x, self.y, self.z)]
         self.mass = mass
         self.radius = radius
