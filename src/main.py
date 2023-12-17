@@ -27,7 +27,7 @@ def main():
     while True:
         simulation = update_classical(compact_object_1, compact_object_2, time_step, initial_distance)
         if simulation == 'separation' or simulation == 'collision':
-            file = f'../figures/simulation_{compact_object_1.object_type}_{compact_object_1.mass}_{compact_object_2.object_type}_{compact_object_2.mass}'
+            file = '../figures/test/simulation'
             plot_3d_scatter_animation(compact_object_1, compact_object_2, file, trail=True)
             mp4_to_gif(f'{file}.mp4', f'{file}.gif')
             break
