@@ -10,6 +10,7 @@
   - [Example 2 Parallel](#example-2-parallel)
   - [Example 3 Spiral](#example-3-spiral)
 - [Technical Features](#technical-features)
+- 
 
 ## Introduction
 
@@ -19,8 +20,12 @@ The current state of this project is just the inspiral. Future work will include
 
 ## Demos
 
+
+
 In order for a compact binary to coalesce, gravitational wave emission allows the system to lose energy and a merger to proceed.
 In this demo we can see the result of null energy loss for each compact object, thus not resulting in a merger.
+
+<div align=center>
 
 ### Example 1:
 
@@ -44,6 +49,9 @@ Setting the compact objects to be in orbit around the centre of mass in the syst
 
 ![simulation.gif](figures/test/spirals/simulation_spiral_gw.gif)
 
+<div align=left>
+
+
 ## Technical Features
 
 - **Multiprocessing**: The `multiprocessing` module is utilised to improve performance and efficiency, especially in generating animation frames. By dividing the work among multiple CPU cores, the rendering process is significantly accelerated.
@@ -57,3 +65,8 @@ Setting the compact objects to be in orbit around the centre of mass in the syst
 - **Dynamic Simulation Parameters**: The script is designed to adjust various parameters like object separation and kinetic energy loss, allowing for diverse simulation scenarios.
 
 - **Efficient Memory Management**: To manage system resources effectively, the script saves temporary files to drive storage rather than using all the systems memory. After processing, the temporary files are removed.
+
+## License
+[License](LICENSE)
+
+## [Back To Top](#CBC-Simulation)
