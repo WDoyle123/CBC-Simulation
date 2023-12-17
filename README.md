@@ -10,7 +10,7 @@
   - [Example 2 Parallel](#example-2-parallel)
   - [Example 3 Spiral](#example-3-spiral)
 - [Technical Features](#technical-features)
-- 
+- [License](#License)
 
 ## Introduction
 
