@@ -7,7 +7,7 @@ def update_classical(compact_object_1, compact_object_2, time_step, initial_dist
     dx, dy, dz, distance_between_objects = distance_3d(compact_object_1, compact_object_2)
 
     # Check for separation or collision
-    if distance_between_objects > initial_distance:
+    if distance_between_objects > initial_distance * 2:
         return 'separation'
     if distance_between_objects <= (compact_object_1.radius + compact_object_2.radius):
         return 'collision'
@@ -66,7 +66,10 @@ def gw_energy_loss(compact_object_1, compact_object_2, distance_between_objects)
 
 def update_velocity_from_kinetic_energy(compact_object):
     # Calculate the magnitude of the new velocity
+    compact_object.kinetic_energy * 100
+    compact_object.mass * 100
     new_velocity_magnitude = math.sqrt(2 * compact_object.kinetic_energy / compact_object.mass)
+    new_velocity_magnitude /= 100
 
     # Update velocity components proportionally
     total_velocity = math.sqrt(compact_object.velocity_x**2 + compact_object.velocity_y**2 + compact_object.velocity_z**2)

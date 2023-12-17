@@ -11,6 +11,8 @@ from mpl_toolkits.mplot3d import Axes3D
 from matplotlib.animation import FuncAnimation
 from multiprocessing import Pool
 
+from utils.files import directory_exists
+
 def blackout(fig, ax, grid=True):
 
     fig.set_facecolor('black')
@@ -76,9 +78,9 @@ def get_fig_ax(trail, object_1, object_2, separation):
         midpoint_z = (object_1.z + object_2.z) / 2
 
         # Set the limits based on the specified separation
-        ax.set_xlim([midpoint_x - separation, midpoint_x + separation])
-        ax.set_ylim([midpoint_y - separation, midpoint_y + separation])
-        ax.set_zlim([midpoint_z - separation, midpoint_z + separation])
+        ax.set_xlim([0, separation])
+        ax.set_ylim([0, separation])
+        ax.set_zlim([0, separation])
 
     return fig, ax
 
@@ -134,6 +136,8 @@ def plot_3d_scatter_animation(object_1, object_2, file, separation=None,trail=Fa
         with Pool(num_workers) as pool:
             tasks = [(frame_range, object_1, object_2, trail, frames_dir, separation) for frame_range in frame_ranges]
             list(tqdm(pool.imap_unordered(worker, tasks), total=len(tasks), desc="Generating frames"))
+
+    directory_exists(file)
 
     # Use FFmpeg to combine frames into a video with GPU acceleration
     ffmpeg_command = [
