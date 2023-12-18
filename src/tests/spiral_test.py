@@ -3,6 +3,7 @@ import os
 sys.path.append(os.path.abspath('../'))
 
 import math
+import time
 
 from calculations.classical_mechanics import update_classical, kinetic_energy, update_classical_no_gw, orbital_velocity
 from calculations.distance_metrics import distance_3d
@@ -12,6 +13,8 @@ from visualisation.plotter import plot_3d_scatter_animation, mp4_to_gif
 from utils.constants import *
 
 def main():
+
+    start_time = time.time()
 
     mass_1 = 9
     mass_2 = 12
@@ -67,6 +70,9 @@ def main():
             break
         if current_step >= max_step:
             break
+
+    end_time = time.time()
+    time_taken = end_time - start_time
 
 if __name__ == '__main__':
     main()

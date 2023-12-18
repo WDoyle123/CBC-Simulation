@@ -124,8 +124,9 @@ def plot_3d_scatter_animation(object_1, object_2, file, separation=None,trail=No
     frames_dir = 'animation_frames'
     os.makedirs(frames_dir, exist_ok=True)
 
-    # Determine number of workers and divide work
-    num_workers = (os.cpu_count() - 1)  # or os.cpu_count() to use all available CPU cores
+    # Determine number of workers and divide work 
+    num_workers = (os.cpu_count() * 12)  # 1.6 times faster compared to (os.cpu_count() - 1)
+    print(num_workers)
     frame_ranges = np.array_split(range(trajectory_length), num_workers)
 
     if trail is not None:
